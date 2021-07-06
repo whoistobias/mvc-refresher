@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Rekt.Models;
 
-namespace Commander.Data
+namespace Rekt.Data
 {
     public class CommanderContext : DbContext
     {
