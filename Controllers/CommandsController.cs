@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Rekt.Data;
 using Rekt.Dtos;
@@ -60,6 +61,32 @@ namespace Rekt.Controllers
             }
 
             _mapper.Map(commandUpdateDto, commandFromRepo);
+
+            _repository.UpdateCommand(commandFromRepo);
+
+            _repository.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public ActionResult PartialCommandUpdate(int id, JsonPatchDocument<CommandUpdateDto> patchDocument)
+        {
+            var commandFromRepo = _repository.GetCommandById(id);
+            if (commandFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            var commandToPatch = _mapper.Map<CommandUpdateDto>(commandFromRepo);
+            patchDocument.ApplyTo(commandToPatch, ModelState);
+
+            if (!TryValidateModel(commandToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(commandToPatch, commandFromRepo);
 
             _repository.UpdateCommand(commandFromRepo);
 
