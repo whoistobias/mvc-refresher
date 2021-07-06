@@ -12,5 +12,6 @@ namespace Rekt.Data
         Command GetCommandById(int id);
         void CreateCommand(Command command);
         void UpdateCommand(Command command);
+        void DeleteCommand(Command command);
     }
 }
